@@ -1,4 +1,4 @@
-package oi.udemy.quarkus.dto;
+package io.udemy.quarkus.dto;
 
 public class UsuarioDto {
 

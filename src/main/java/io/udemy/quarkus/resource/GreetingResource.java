@@ -1,4 +1,4 @@
-package oi.udemy.quarkus.resource;
+package io.udemy.quarkus.resource;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

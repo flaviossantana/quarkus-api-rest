@@ -1,6 +1,6 @@
-package oi.udemy.quarkus.resource;
+package io.udemy.quarkus.resource;
 
-import oi.udemy.quarkus.dto.UsuarioDto;
+import io.udemy.quarkus.dto.UsuarioDto;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

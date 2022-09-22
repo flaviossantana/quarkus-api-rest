@@ -1,4 +1,4 @@
-package oi.udemy.quarkus;
+package io.udemy.quarkus;
 
 import io.quarkus.test.junit.NativeImageTest;
 
