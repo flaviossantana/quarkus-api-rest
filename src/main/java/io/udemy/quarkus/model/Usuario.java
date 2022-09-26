@@ -7,13 +7,13 @@ import javax.persistence.*;
 public class Usuario {
 
     @Id
-    @Column(name = "id-usuario")
+    @Column(name = "id_usuario")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "desc-nome")
+    @Column(name = "desc_nome")
     private String nome;
 
-    @Column(name = "num-idade")
+    @Column(name = "num_idade")
     private Integer idade;
 
     public Usuario() {
