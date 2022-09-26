@@ -3,6 +3,7 @@ package io.udemy.quarkus.resource;
 import io.udemy.quarkus.dto.UsuarioDto;
 import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.UsuarioRepository;
+import io.udemy.quarkus.validator.ResponseError;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -37,9 +38,10 @@ public class UsuariosResource {
         Set<ConstraintViolation<UsuarioDto>> validate = this.validator.validate(dto);
 
         if (!validate.isEmpty()) {
-            ConstraintViolation<UsuarioDto> constraintViolation = validate.stream().findAny().get();
-            String message = constraintViolation.getMessage();
-            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(ResponseError.of(validate))
+                    .build();
         }
 
 
