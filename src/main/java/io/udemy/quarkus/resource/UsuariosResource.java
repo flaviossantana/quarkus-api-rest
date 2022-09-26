@@ -6,10 +6,13 @@ import io.udemy.quarkus.repository.UsuarioRepository;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
+import java.util.Set;
 
 @Path("/usuarios")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -19,6 +22,9 @@ public class UsuariosResource {
     @Inject
     UsuarioRepository usuarioRepository;
 
+    @Inject
+    Validator validator;
+
     @GET
     public Response listarTodosUsuarios() {
         return Response.ok(this.usuarioRepository.listAll()).build();
@@ -27,6 +33,15 @@ public class UsuariosResource {
     @POST
     @Transactional
     public Response criarUsuario(UsuarioDto dto) {
+
+        Set<ConstraintViolation<UsuarioDto>> validate = this.validator.validate(dto);
+
+        if (!validate.isEmpty()) {
+            ConstraintViolation<UsuarioDto> constraintViolation = validate.stream().findAny().get();
+            String message = constraintViolation.getMessage();
+            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+        }
+
 
         Usuario usuario = new Usuario(dto.getNome(), dto.getIdade());
 
@@ -45,7 +60,7 @@ public class UsuariosResource {
 
         Optional<Usuario> usuarioOptional = Usuario.findByIdOptional(id);
 
-        if(usuarioOptional.isEmpty()) {
+        if (usuarioOptional.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
@@ -60,7 +75,7 @@ public class UsuariosResource {
     public Response atualizarUsuario(@PathParam("id") Long id, UsuarioDto dto) {
         Optional<Usuario> usuarioOptional = Usuario.findByIdOptional(id);
 
-        if(usuarioOptional.isEmpty()) {
+        if (usuarioOptional.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
