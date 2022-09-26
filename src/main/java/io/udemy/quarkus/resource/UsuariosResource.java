@@ -38,10 +38,9 @@ public class UsuariosResource {
         Set<ConstraintViolation<UsuarioDto>> validate = this.validator.validate(dto);
 
         if (!validate.isEmpty()) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(ResponseError.of(validate))
-                    .build();
+            return ResponseError
+                    .of(validate)
+                    .status(ResponseError.UNPROCESSABLE_ENTITY);
         }
 
 
@@ -52,7 +51,10 @@ public class UsuariosResource {
 
         this.usuarioRepository.persist(usuario);
 
-        return Response.ok(usuario).build();
+        return Response
+                .status(Response.Status.CREATED)
+                .entity(usuario)
+                .build();
     }
 
     @DELETE
@@ -67,7 +69,7 @@ public class UsuariosResource {
         }
 
         usuarioOptional.get().delete();
-        return Response.ok().build();
+        return Response.noContent().build();
 
     }
 
@@ -85,7 +87,7 @@ public class UsuariosResource {
         usuario.setNome(dto.getNome());
         usuario.setIdade(dto.getIdade());
 
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
 }
