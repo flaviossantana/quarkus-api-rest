@@ -3,7 +3,7 @@ package io.udemy.quarkus.dto;
 public class UsuarioDto {
 
     private String nome;
-    private String idade;
+    private Integer idade;
 
     public String getNome() {
         return nome;
@@ -13,11 +13,11 @@ public class UsuarioDto {
         this.nome = nome;
     }
 
-    public String getIdade() {
+    public Integer getIdade() {
         return idade;
     }
 
-    public void setIdade(String idade) {
+    public void setIdade(Integer idade) {
         this.idade = idade;
     }
 }

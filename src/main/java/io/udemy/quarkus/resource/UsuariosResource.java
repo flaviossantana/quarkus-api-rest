@@ -1,7 +1,9 @@
 package io.udemy.quarkus.resource;
 
 import io.udemy.quarkus.dto.UsuarioDto;
+import io.udemy.quarkus.model.Usuario;
 
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -12,14 +14,18 @@ import javax.ws.rs.core.Response;
 public class UsuariosResource {
 
     @POST
-    public Response criarUsuario(UsuarioDto usuarioDto) {
-        return Response.ok(usuarioDto).build();
+    @Transactional
+    public Response criarUsuario(UsuarioDto dto) {
+
+        Usuario usuario = new Usuario(dto.getNome(), dto.getIdade());
+        usuario.persist();
+
+        return Response.ok(usuario).build();
     }
 
     @GET
     public Response listarTodosUsuarios() {
-        return Response.ok().build();
+        return Response.ok(Usuario.listAll()).build();
     }
-
 
 }

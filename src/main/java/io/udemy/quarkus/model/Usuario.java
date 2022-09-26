@@ -1,10 +1,13 @@
 package io.udemy.quarkus.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
-public class Usuario {
+public class Usuario extends PanacheEntityBase {
 
     @Id
     @Column(name = "id_usuario")
@@ -17,6 +20,11 @@ public class Usuario {
     private Integer idade;
 
     public Usuario() {
+    }
+
+    public Usuario(String nome, Integer idade) {
+        this.nome = nome;
+        this.idade = idade;
     }
 
     public Long getId() {
