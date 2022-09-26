@@ -2,7 +2,9 @@ package io.udemy.quarkus.resource;
 
 import io.udemy.quarkus.dto.UsuarioDto;
 import io.udemy.quarkus.model.Usuario;
+import io.udemy.quarkus.repository.UsuarioRepository;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -14,9 +16,12 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class UsuariosResource {
 
+    @Inject
+    UsuarioRepository usuarioRepository;
+
     @GET
     public Response listarTodosUsuarios() {
-        return Response.ok(Usuario.listAll()).build();
+        return Response.ok(this.usuarioRepository.listAll()).build();
     }
 
     @POST
@@ -24,7 +29,11 @@ public class UsuariosResource {
     public Response criarUsuario(UsuarioDto dto) {
 
         Usuario usuario = new Usuario(dto.getNome(), dto.getIdade());
-        usuario.persist();
+
+        // PERSISTINDO USANDO PANACHE
+        //usuario.persist();
+
+        this.usuarioRepository.persist(usuario);
 
         return Response.ok(usuario).build();
     }
