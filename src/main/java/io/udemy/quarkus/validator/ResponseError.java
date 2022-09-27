@@ -1,5 +1,8 @@
 package io.udemy.quarkus.validator;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import javax.validation.ConstraintViolation;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
@@ -7,17 +10,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Data
+@AllArgsConstructor
 public class ResponseError {
 
     public static final int UNPROCESSABLE_ENTITY = 422;
 
     private String message;
     private Collection<FieldError> errors;
-
-    public ResponseError(String message, Collection<FieldError> errors) {
-        this.message = message;
-        this.errors = errors;
-    }
 
     public static <T> ResponseError of(Set<ConstraintViolation<T>> violations) {
 
@@ -28,14 +28,6 @@ public class ResponseError {
         ).collect(Collectors.toList());
 
         return new ResponseError("Validation error", erros);
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public Collection<FieldError> getErrors() {
-        return errors;
     }
 
     public Response status(int httpStatus) {
