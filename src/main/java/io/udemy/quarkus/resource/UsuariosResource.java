@@ -43,11 +43,7 @@ public class UsuariosResource implements JsonMediaTypeApplications {
 
 
         Usuario usuario = new Usuario(dto.getNome(), dto.getIdade());
-
-        // PERSISTINDO USANDO PANACHE
-        //usuario.persist();
-
-        this.usuarioRepository.persist(usuario);
+        usuario.persist();
 
         return Response
                 .status(Response.Status.CREATED)
