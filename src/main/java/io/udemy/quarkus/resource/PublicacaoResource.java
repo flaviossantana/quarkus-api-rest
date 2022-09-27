@@ -3,11 +3,11 @@ package io.udemy.quarkus.resource;
 
 import io.quarkus.panache.common.Sort;
 import io.udemy.quarkus.core.JsonMediaTypeApplications;
-import io.udemy.quarkus.dto.PostRequestDto;
-import io.udemy.quarkus.dto.PostResponseDto;
-import io.udemy.quarkus.model.Post;
+import io.udemy.quarkus.dto.PublicacaoRequestDto;
+import io.udemy.quarkus.dto.PublicacaoResponseDto;
+import io.udemy.quarkus.model.Publicacao;
 import io.udemy.quarkus.model.Usuario;
-import io.udemy.quarkus.repository.PostRepository;
+import io.udemy.quarkus.repository.PublicacaoRepository;
 import io.udemy.quarkus.repository.UsuarioRepository;
 
 import javax.inject.Inject;
@@ -21,18 +21,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Path("/usuarios/{userId}/posts")
-public class PostResource implements JsonMediaTypeApplications {
+@Path("/usuarios/{userId}/publicacoes")
+public class PublicacaoResource implements JsonMediaTypeApplications {
 
     @Inject
     UsuarioRepository usuarioRepository;
 
     @Inject
-    PostRepository  postRepository;
+    PublicacaoRepository publicacaoRepository;
 
     @POST
     @Transactional
-    public Response salvarPost(@PathParam("userId") Long userId, PostRequestDto dto) {
+    public Response salvarPublicacoes(@PathParam("userId") Long userId, PublicacaoRequestDto dto) {
 
         Optional<Usuario> usuarioOptional = this.usuarioRepository.findByIdOptional(userId);
 
@@ -40,29 +40,29 @@ public class PostResource implements JsonMediaTypeApplications {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        Post post = new Post(dto.getTexto(), usuarioOptional.get());
+        Publicacao publicacao = new Publicacao(dto.getTexto(), usuarioOptional.get());
 
-        this.postRepository.persist(post);
+        this.publicacaoRepository.persist(publicacao);
 
         return Response
                 .status(Response.Status.CREATED)
-                .entity(post)
+                .entity(publicacao)
                 .build();
     }
 
     @GET
     public Response listarTodos(@PathParam("userId") Long userId) {
 
-        List<Post> posts = this.postRepository.list("usuario.id", Sort.descending("dataCriacao"), userId);
+        List<Publicacao> publicacaos = this.publicacaoRepository.list("usuario.id", Sort.descending("dataCriacao"), userId);
 
-        if(posts.isEmpty()) {
+        if(publicacaos.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
         return Response
-                .ok(posts
+                .ok(publicacaos
                         .stream()
-                        .map(PostResponseDto::from)
+                        .map(PublicacaoResponseDto::from)
                         .collect(Collectors.toList()))
                 .build();
     }

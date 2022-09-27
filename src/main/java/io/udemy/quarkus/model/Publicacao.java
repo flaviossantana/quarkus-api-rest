@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "posts")
-public class Post {
+@Table(name = "publicacao")
+public class Publicacao {
 
     @Id
-    @Column(name = "id_post")
+    @Column(name = "id_publicacao")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -32,7 +32,7 @@ public class Post {
         this.dataCriacao = LocalDateTime.now();
     }
 
-    public Post(String texto, Usuario usuario) {
+    public Publicacao(String texto, Usuario usuario) {
         this.texto = texto;
         this.usuario = usuario;
     }
