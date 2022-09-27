@@ -21,4 +21,9 @@ public class Seguidor {
     @JoinColumn(name = "id_usuario_seguido", nullable = false)
     private Usuario seguidor;
 
+
+    public Seguidor(Usuario usuario, Usuario seguidor) {
+        this.usuario = usuario;
+        this.seguidor = seguidor;
+    }
 }
