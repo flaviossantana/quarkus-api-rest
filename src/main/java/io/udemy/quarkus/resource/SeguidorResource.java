@@ -6,6 +6,7 @@ import io.udemy.quarkus.model.Seguidor;
 import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.SeguidorRepository;
 import io.udemy.quarkus.repository.UsuarioRepository;
+import io.udemy.quarkus.validator.FieldError;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -34,6 +35,13 @@ public class SeguidorResource implements JsonMediaTypeApplications {
     @PUT
     @Transactional
     public Response seguirUsuario(@PathParam("userId") Long userId, SeguidorRequestDto dto) {
+
+        if(userId.equals(dto.getIdSeguido())){
+            return Response
+                    .status(Response.Status.CONFLICT)
+                    .entity(new FieldError("idSeguido", "Você não pode seguir a si mesmo"))
+                    .build();
+        }
 
         Optional<Usuario> usuarioOptional = this.usuarioRepository
                 .findByIdOptional(userId);
