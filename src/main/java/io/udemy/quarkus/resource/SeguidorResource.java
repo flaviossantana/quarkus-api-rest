@@ -28,17 +28,13 @@ public class SeguidorResource implements JsonMediaTypeApplications {
     @PUT
     public Response seguirUsuario(@PathParam("userId") Long userId, SeguidorRequestDto dto) {
 
-        Optional<Usuario> usuarioOptional = this.usuarioRepository.findByIdOptional(userId);
-
-        if (usuarioOptional.isEmpty()){
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        Optional<Usuario> usuarioOptional = this.usuarioRepository
+                .findByIdOptional(userId);
 
         Optional<Usuario> seguidorOptional = this.usuarioRepository
                 .findByIdOptional(dto.getIdSeguido());
 
-
-        if (seguidorOptional.isEmpty()){
+        if (usuarioOptional.isEmpty() || seguidorOptional.isEmpty()){
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
