@@ -8,6 +8,7 @@ import io.udemy.quarkus.repository.SeguidorRepository;
 import io.udemy.quarkus.repository.UsuarioRepository;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -25,7 +26,13 @@ public class SeguidorResource implements JsonMediaTypeApplications {
     @Inject
     SeguidorRepository seguidorRepository;
 
+    @GET
+    public Response todos(){
+        return Response.ok(this.seguidorRepository.listAll()).build();
+    }
+
     @PUT
+    @Transactional
     public Response seguirUsuario(@PathParam("userId") Long userId, SeguidorRequestDto dto) {
 
         Optional<Usuario> usuarioOptional = this.usuarioRepository
@@ -38,8 +45,10 @@ public class SeguidorResource implements JsonMediaTypeApplications {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        this.seguidorRepository
-                .persist(new Seguidor(usuarioOptional.get(), seguidorOptional.get()));
+        if(this.seguidorRepository.isNaoESeguidor(seguidorOptional.get(), usuarioOptional.get())){
+            this.seguidorRepository
+                    .persist(new Seguidor(usuarioOptional.get(), seguidorOptional.get()));
+        }
 
         return Response.status(Response.Status.NO_CONTENT).build();
     }

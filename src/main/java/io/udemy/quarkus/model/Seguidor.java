@@ -1,11 +1,13 @@
 package io.udemy.quarkus.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "seguidores")
 public class Seguidor {
 
