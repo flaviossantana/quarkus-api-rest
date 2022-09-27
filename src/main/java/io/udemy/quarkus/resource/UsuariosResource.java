@@ -1,5 +1,6 @@
 package io.udemy.quarkus.resource;
 
+import io.udemy.quarkus.core.JsonMediaTypeApplications;
 import io.udemy.quarkus.dto.UsuarioDto;
 import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.UsuarioRepository;
@@ -10,15 +11,12 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
 import java.util.Set;
 
 @Path("/usuarios")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public class UsuariosResource {
+public class UsuariosResource implements JsonMediaTypeApplications {
 
     @Inject
     UsuarioRepository usuarioRepository;
