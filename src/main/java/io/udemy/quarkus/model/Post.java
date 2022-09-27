@@ -17,20 +17,23 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "desc_texto", length = 150)
+    @Column(name = "desc_texto", length = 150, nullable = false)
     private String texto;
 
-    @Column(name = "data_criacao")
+    @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
+    @PrePersist
+    public void prePersist(){
+        this.dataCriacao = LocalDateTime.now();
+    }
 
     public Post(String texto, Usuario usuario) {
         this.texto = texto;
         this.usuario = usuario;
-        this.dataCriacao = LocalDateTime.now();
     }
 }

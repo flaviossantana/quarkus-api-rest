@@ -1,8 +1,10 @@
 package io.udemy.quarkus.resource;
 
 
+import io.quarkus.panache.common.Sort;
 import io.udemy.quarkus.core.JsonMediaTypeApplications;
-import io.udemy.quarkus.dto.PostDto;
+import io.udemy.quarkus.dto.PostRequestDto;
+import io.udemy.quarkus.dto.PostResponseDto;
 import io.udemy.quarkus.model.Post;
 import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.PostRepository;
@@ -15,7 +17,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path("/usuarios/{userId}/posts")
 public class PostResource implements JsonMediaTypeApplications {
@@ -28,7 +32,7 @@ public class PostResource implements JsonMediaTypeApplications {
 
     @POST
     @Transactional
-    public Response salvarPost(@PathParam("userId") Long userId, PostDto dto) {
+    public Response salvarPost(@PathParam("userId") Long userId, PostRequestDto dto) {
 
         Optional<Usuario> usuarioOptional = this.usuarioRepository.findByIdOptional(userId);
 
@@ -48,8 +52,18 @@ public class PostResource implements JsonMediaTypeApplications {
 
     @GET
     public Response listarTodos(@PathParam("userId") Long userId) {
+
+        List<Post> posts = this.postRepository.list("usuario.id", Sort.descending("dataCriacao"), userId);
+
+        if(posts.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
         return Response
-                .ok(this.postRepository.list("usuario.id = ?1 order by dataCriacao asc", userId))
+                .ok(posts
+                        .stream()
+                        .map(PostResponseDto::from)
+                        .collect(Collectors.toList()))
                 .build();
     }
 
