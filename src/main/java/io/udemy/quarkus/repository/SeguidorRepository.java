@@ -12,7 +12,7 @@ import java.util.Optional;
 @ApplicationScoped
 public class SeguidorRepository implements PanacheRepository<Seguidor> {
 
-    public boolean isNaoESeguidor(Usuario seguidor, Usuario usuario){
+    public boolean isNaoESeguidor(Usuario seguidor, Usuario usuario) {
 
         Optional<Seguidor> seguidorOptional = find("seguidor = :seguidor and usuario = :usuario",
                 Parameters
@@ -26,5 +26,13 @@ public class SeguidorRepository implements PanacheRepository<Seguidor> {
 
     public List<Seguidor> buscarPorUsuario(Long userId) {
         return list("usuario.id", userId);
+    }
+
+    public void excluirPorUsuarioESeguidor(Long userId, Long seguidorId) {
+        delete("usuario.id = :userId and seguidor.id = :seguidorId",
+                Parameters
+                        .with("userId", userId)
+                        .and("seguidorId", seguidorId).map()
+        );
     }
 }

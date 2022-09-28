@@ -1,5 +1,6 @@
 package io.udemy.quarkus.resource;
 
+import io.quarkus.panache.common.Parameters;
 import io.udemy.quarkus.core.JsonMediaTypeApplications;
 import io.udemy.quarkus.dto.SeguidorRequestDto;
 import io.udemy.quarkus.dto.SeguidorResponseDto;
@@ -12,10 +13,7 @@ import io.udemy.quarkus.validator.FieldError;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +34,7 @@ public class SeguidorResource implements JsonMediaTypeApplications {
 
         List<Seguidor> seguidores = this.seguidorRepository.buscarPorUsuario(userId);
 
-        if(seguidores.isEmpty()){
+        if (seguidores.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
@@ -52,7 +50,7 @@ public class SeguidorResource implements JsonMediaTypeApplications {
     @Transactional
     public Response seguirUsuario(@PathParam("userId") Long userId, SeguidorRequestDto dto) {
 
-        if(userId.equals(dto.getIdSeguido())){
+        if (userId.equals(dto.getIdSeguido())) {
             return Response
                     .status(Response.Status.CONFLICT)
                     .entity(new FieldError("idSeguido", "Você não pode seguir a si mesmo"))
@@ -65,14 +63,28 @@ public class SeguidorResource implements JsonMediaTypeApplications {
         Optional<Usuario> seguidorOptional = this.usuarioRepository
                 .findByIdOptional(dto.getIdSeguido());
 
-        if (usuarioOptional.isEmpty() || seguidorOptional.isEmpty()){
+        if (usuarioOptional.isEmpty() || seguidorOptional.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        if(this.seguidorRepository.isNaoESeguidor(seguidorOptional.get(), usuarioOptional.get())){
+        if (this.seguidorRepository.isNaoESeguidor(seguidorOptional.get(), usuarioOptional.get())) {
             this.seguidorRepository
                     .persist(new Seguidor(usuarioOptional.get(), seguidorOptional.get()));
         }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @DELETE
+    @Transactional
+    @QueryParam("seguidorId")
+    public Response deixarDeSeguirUsuario(@PathParam("userId") Long userId, @QueryParam("seguidorId") Long seguidorId) {
+
+        if (this.usuarioRepository.findByIdOptional(userId).isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        this.seguidorRepository.excluirPorUsuarioESeguidor(userId, seguidorId);
 
         return Response.status(Response.Status.NO_CONTENT).build();
     }
