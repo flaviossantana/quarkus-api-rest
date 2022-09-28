@@ -5,7 +5,6 @@ import io.quarkus.panache.common.Sort;
 import io.udemy.quarkus.core.JsonMediaTypeApplications;
 import io.udemy.quarkus.dto.PublicacaoRequestDto;
 import io.udemy.quarkus.dto.PublicacaoResponseDto;
-import io.udemy.quarkus.dto.SeguidorResponseDto;
 import io.udemy.quarkus.model.Publicacao;
 import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.PublicacaoRepository;
@@ -62,6 +61,7 @@ public class PublicacaoResource implements JsonMediaTypeApplications {
                     .entity(new FieldError("seguidorId", "Você não pode ver essa publicalção"))
                     .build();
         }
+
 
         List<Publicacao> publicacaos = this.publicacaoRepository
                 .list("usuario.id", Sort.descending("dataCriacao"), userId);
