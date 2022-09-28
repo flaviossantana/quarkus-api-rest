@@ -6,6 +6,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UsuarioDto {
     @NotBlank(message = "Nome é obrigatório")
     private String nome;
