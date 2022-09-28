@@ -55,7 +55,7 @@ public class PublicacaoResource implements JsonMediaTypeApplications {
     @GET
     public Response listarTodos(@PathParam("userId") Long userId, @HeaderParam("seguidorId") Long seguidorId) {
 
-        if(this.seguidorRepository.isNaoESeguidor(userId, seguidorId)){
+        if(this.seguidorRepository.isNaoESeguidor(seguidorId, userId)){
             return Response
                     .status(Response.Status.FORBIDDEN)
                     .entity(new FieldError("seguidorId", "Você não pode ver essa publicalção"))

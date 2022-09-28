@@ -1,6 +1,5 @@
 package io.udemy.quarkus.resource;
 
-import io.quarkus.panache.common.Parameters;
 import io.udemy.quarkus.core.JsonMediaTypeApplications;
 import io.udemy.quarkus.dto.SeguidorRequestDto;
 import io.udemy.quarkus.dto.SeguidorResponseDto;
