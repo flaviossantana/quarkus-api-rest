@@ -66,7 +66,7 @@ class SeguidorResourceTest {
 
     @Test
     @DisplayName("Deixar de seguir usuário")
-    public void deixarDeSeguirUsuario(){
+    public void testDeixarDeSeguirUsuario(){
         given()
                 .contentType(ContentType.JSON)
                 .pathParams("userId", 100)
@@ -74,6 +74,28 @@ class SeguidorResourceTest {
                 .delete()
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("Buscar seguidores de um usuário")
+    public void testBuscarTodosSeguidores(){
+        given()
+                .contentType(ContentType.JSON)
+                .pathParams("userId", 100)
+                .get()
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    @DisplayName("Buscar seguidores de um usuário inexistente")
+    public void testBuscarSeguidorUsuarioInexistente(){
+        given()
+                .contentType(ContentType.JSON)
+                .pathParams("userId", idUsuarioInexistente)
+                .get()
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
 }
