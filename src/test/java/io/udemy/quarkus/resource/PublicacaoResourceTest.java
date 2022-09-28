@@ -9,6 +9,7 @@ import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.SeguidorRepository;
 import io.udemy.quarkus.repository.UsuarioRepository;
 import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 
 import javax.inject.Inject;
@@ -27,20 +28,25 @@ class PublicacaoResourceTest {
     @Inject
     SeguidorRepository seguidorRepository;
 
-    Long usuarioId;
+    Long joaoBioscoID;
     Long idUsuarioInexistente = 999999999L;
 
     @BeforeEach
     @Transactional
     public void antesDeCadaTesteExecute() {
+        vincularSeguidorEUsuario(criarUsuarioJoaoBiosco());
+    }
+
+    private void vincularSeguidorEUsuario(Usuario joaoBiosco) {
+        Usuario flavioSantana = this.usuarioRepository.findById(100l);
+        this.seguidorRepository.persist(new Seguidor(joaoBiosco, flavioSantana));
+    }
+
+    private Usuario criarUsuarioJoaoBiosco() {
         Usuario joaoBiosco = new Usuario("João Biosco", 30);
         this.usuarioRepository.persist(joaoBiosco);
-        this.usuarioId = joaoBiosco.getId();
-
-        Usuario flavioSantana = this.usuarioRepository.findById(100l);
-
-        this.seguidorRepository.persist(new Seguidor(joaoBiosco, flavioSantana));
-
+        this.joaoBioscoID = joaoBiosco.getId();
+        return joaoBiosco;
     }
 
     @Test
@@ -50,7 +56,7 @@ class PublicacaoResourceTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(new PublicacaoRequestDto("Criando uma publicação de teste!"))
-                .pathParams("userId", usuarioId)
+                .pathParams("userId", joaoBioscoID)
                 .when()
                 .post()
                 .then()
@@ -82,7 +88,8 @@ class PublicacaoResourceTest {
                 .when()
                 .get()
                 .then()
-                .statusCode(HttpStatus.SC_FORBIDDEN);
+                .statusCode(HttpStatus.SC_FORBIDDEN)
+                .body("message", Matchers.is("Você não pode ver essa publicação"));
     }
 
     @Test
@@ -91,7 +98,7 @@ class PublicacaoResourceTest {
     public void usuarioSemPublicacoesPostada() {
         given()
                 .contentType(ContentType.JSON)
-                .pathParams("userId", usuarioId)
+                .pathParams("userId", joaoBioscoID)
                 .header("seguidorId", 100)
                 .when()
                 .get()
@@ -110,7 +117,8 @@ class PublicacaoResourceTest {
                 .when()
                 .get()
                 .then()
-                .statusCode(HttpStatus.SC_OK);
+                .statusCode(HttpStatus.SC_OK)
+                .body("size()", Matchers.is(2));
     }
 
 }

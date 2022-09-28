@@ -58,7 +58,7 @@ public class PublicacaoResource implements JsonMediaTypeApplications {
         if(this.seguidorRepository.isNaoESeguidor(seguidorId, userId)){
             return Response
                     .status(Response.Status.FORBIDDEN)
-                    .entity(new FieldError("seguidorId", "Você não pode ver essa publicalção"))
+                    .entity(new FieldError("seguidorId", "Você não pode ver essa publicação"))
                     .build();
         }
 
