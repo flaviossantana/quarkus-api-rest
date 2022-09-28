@@ -2,6 +2,8 @@ package io.udemy.quarkus.resource;
 
 import io.udemy.quarkus.core.JsonMediaTypeApplications;
 import io.udemy.quarkus.dto.SeguidorRequestDto;
+import io.udemy.quarkus.dto.SeguidorResponseDto;
+import io.udemy.quarkus.dto.SeguidoresPorUsuarioResponseDto;
 import io.udemy.quarkus.model.Seguidor;
 import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.SeguidorRepository;
@@ -15,7 +17,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Path("/usuarios/{userId}/seguidores")
@@ -28,8 +32,20 @@ public class SeguidorResource implements JsonMediaTypeApplications {
     SeguidorRepository seguidorRepository;
 
     @GET
-    public Response todos(){
-        return Response.ok(this.seguidorRepository.listAll()).build();
+    public Response todos(@PathParam("userId") Long userId) {
+
+        List<Seguidor> seguidores = this.seguidorRepository.buscarPorUsuario(userId);
+
+        if(seguidores.isEmpty()){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<SeguidorResponseDto> seguidoresDTO = seguidores
+                .stream()
+                .map(SeguidorResponseDto::new)
+                .collect(Collectors.toList());
+
+        return Response.ok(new SeguidoresPorUsuarioResponseDto(seguidoresDTO)).build();
     }
 
     @PUT

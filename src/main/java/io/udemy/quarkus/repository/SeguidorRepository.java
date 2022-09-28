@@ -6,6 +6,7 @@ import io.udemy.quarkus.model.Seguidor;
 import io.udemy.quarkus.model.Usuario;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -23,4 +24,7 @@ public class SeguidorRepository implements PanacheRepository<Seguidor> {
     }
 
 
+    public List<Seguidor> buscarPorUsuario(Long userId) {
+        return list("usuario.id", userId);
+    }
 }
