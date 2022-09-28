@@ -23,6 +23,16 @@ public class SeguidorRepository implements PanacheRepository<Seguidor> {
         return !seguidorOptional.isPresent();
     }
 
+    public boolean isNaoESeguidor(Long seguidorId, Long usuarioId) {
+
+        Optional<Seguidor> seguidorOptional = find("seguidor.id = :seguidorId and usuario.id = :usuarioId",
+                Parameters
+                        .with("seguidorId", seguidorId)
+                        .and("usuarioId", usuarioId)
+                        .map()).firstResultOptional();
+
+        return !seguidorOptional.isPresent();
+    }
 
     public List<Seguidor> buscarPorUsuario(Long userId) {
         return list("usuario.id", userId);

@@ -5,17 +5,17 @@ import io.quarkus.panache.common.Sort;
 import io.udemy.quarkus.core.JsonMediaTypeApplications;
 import io.udemy.quarkus.dto.PublicacaoRequestDto;
 import io.udemy.quarkus.dto.PublicacaoResponseDto;
+import io.udemy.quarkus.dto.SeguidorResponseDto;
 import io.udemy.quarkus.model.Publicacao;
 import io.udemy.quarkus.model.Usuario;
 import io.udemy.quarkus.repository.PublicacaoRepository;
+import io.udemy.quarkus.repository.SeguidorRepository;
 import io.udemy.quarkus.repository.UsuarioRepository;
+import io.udemy.quarkus.validator.FieldError;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +29,9 @@ public class PublicacaoResource implements JsonMediaTypeApplications {
 
     @Inject
     PublicacaoRepository publicacaoRepository;
+
+    @Inject
+    SeguidorRepository seguidorRepository;
 
     @POST
     @Transactional
@@ -51,9 +54,17 @@ public class PublicacaoResource implements JsonMediaTypeApplications {
     }
 
     @GET
-    public Response listarTodos(@PathParam("userId") Long userId) {
+    public Response listarTodos(@PathParam("userId") Long userId, @HeaderParam("seguidorId") Long seguidorId) {
 
-        List<Publicacao> publicacaos = this.publicacaoRepository.list("usuario.id", Sort.descending("dataCriacao"), userId);
+        if(this.seguidorRepository.isNaoESeguidor(userId, seguidorId)){
+            return Response
+                    .status(Response.Status.FORBIDDEN)
+                    .entity(new FieldError("seguidorId", "Você não pode ver essa publicalção"))
+                    .build();
+        }
+
+        List<Publicacao> publicacaos = this.publicacaoRepository
+                .list("usuario.id", Sort.descending("dataCriacao"), userId);
 
         if(publicacaos.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
