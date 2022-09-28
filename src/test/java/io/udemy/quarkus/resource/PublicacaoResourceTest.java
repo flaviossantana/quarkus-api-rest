@@ -33,6 +33,7 @@ class PublicacaoResourceTest {
     }
 
     @Test
+    @Order(value = 1)
     @DisplayName("Criar publicação: STATUS 200")
     public void criarPublicacao() {
         given()
@@ -44,6 +45,20 @@ class PublicacaoResourceTest {
                 .then()
                 .statusCode(HttpStatus.SC_CREATED);
 
+    }
+
+    @Test
+    @Order(value = 2)
+    @DisplayName("Criar publicação: STATUS 404")
+    public void criarPublicacaoSemUsuario(){
+        Long idUsuarioInexistente = 999999999L;
+        given().contentType(ContentType.JSON)
+                .body(new PublicacaoRequestDto("Criando uma publicação de teste!"))
+                .pathParams("userId", idUsuarioInexistente)
+                .when()
+                .post()
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
 }
