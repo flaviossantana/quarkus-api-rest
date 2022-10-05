@@ -24,7 +24,7 @@ class UsuariosResourceTest {
     @Test
     @Order(value = 1)
     @DisplayName("Criar um usuário: STATUS 201")
-    public void criarUsuario() {
+    void criarUsuario() {
         given()
                 .contentType(ContentType.JSON)
                 .body(new UsuarioDto("João Biosco", 30))
@@ -40,7 +40,7 @@ class UsuariosResourceTest {
     @Test
     @Order(value = 2)
     @DisplayName("Criar um usuário: STATUS 422")
-    public void criarUsuarioComNomeNulo() {
+    void criarUsuarioComNomeNulo() {
         given()
                 .contentType(ContentType.JSON)
                 .body(new UsuarioDto(null, null))
@@ -56,7 +56,7 @@ class UsuariosResourceTest {
     @Test
     @Order(value = 3)
     @DisplayName("Listar todos os usuários: STATUS 200")
-    public void listarTodosUsuarios() {
+    void listarTodosUsuarios() {
         given()
                 .when()
                 .get(urlUsuario)
